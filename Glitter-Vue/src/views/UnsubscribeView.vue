@@ -1,42 +1,87 @@
 <template>
   <div class="message-container">
-    <div class="container d-flex flex-column justify-content-center align-items-center">
+    <div
+      class="container d-flex flex-column justify-content-center align-items-center"
+    >
       <div class="mt-2">
-        <GlitItem class="message" :author="author" :publishDate="publishDate" :text="text" />
+        <GlitItem
+          class="message"
+          :author="author"
+          :publishDate="publishDate"
+          :text="text"
+        />
       </div>
-      <div><button class="unsubscribeButton" @click="unsubscribe">Yes, it's time to leave the nest...</button></div>
+      <div>
+        <button class="unsubscribeButton" @click="showConfirmation">
+          Yes, it's time to leave the nest...
+        </button>
+      </div>
     </div>
+
+    <!-- Modal de confirmación -->
+    <ConfirmModal
+      :show="showModal"
+      title="Confirmar baja"
+      message="¿Estás seguro de que quieres darte de baja? Esta acción no se puede deshacer."
+      confirmText="Sí, darme de baja"
+      cancelText="No, quedarme"
+      type="danger"
+      icon="fa-user-times"
+      @confirm="unsubscribe"
+      @cancel="showModal = false"
+      @update:show="showModal = $event"
+    />
   </div>
-</template> 
+</template>
 
 <script>
-import glitterApi from "../api/glitterApi"
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import glitterApi from "../api/glitterApi";
 import GlitItem from "../components/GlitItem.vue";
-import { useRouter } from 'vue-router'
-
+import ConfirmModal from "../components/ConfirmModal.vue";
 
 export default {
-  name: 'UnsubscribeView',
+  name: "UnsubscribeView",
   components: {
-    GlitItem
+    GlitItem,
+    ConfirmModal,
   },
   setup() {
-    const router = useRouter()
-    const author = "Glitter"
-    const publishDate = new Date()
-    const text = "Nooo :(. Are you sure you want to leave us? We'll miss you!"
+    const router = useRouter();
+    const store = useStore();
+    const showModal = ref(false);
 
+    const author = "Glitter";
+    const publishDate = new Date();
+    const text = "Nooo :(. Are you sure you want to leave us? We'll miss you!";
+
+    // Mostrar modal de confirmación
+    const showConfirmation = () => {
+      showModal.value = true;
+    };
+
+    // Unsubscribe con mejor manejo
     const unsubscribe = async () => {
       try {
-        const response = await glitterApi.delete("/users", { headers: { authorization: `Bearer ${localStorage.getItem("jwtToken")}` } });
+        const response = await glitterApi.delete("/users");
+
         console.log(response.data);
-        window.alert("It was beautiful while it lasted 😢");
+
+        store.dispatch("notifications/info", "Fue hermoso mientras duró 😢");
+
+        store.dispatch("auth/logout");
+
         setTimeout(() => {
           router.push("/");
         }, 2000);
       } catch (error) {
-        console.error(error);
-        window.alert("There was an error while unsubscribing, please try again later");
+        console.error("Error al darse de baja:", error);
+        store.dispatch(
+          "notifications/error",
+          "Hubo un error al darte de baja. Por favor, intenta más tarde"
+        );
       }
     };
 
@@ -44,10 +89,12 @@ export default {
       author,
       publishDate,
       text,
-      unsubscribe
+      showModal,
+      showConfirmation,
+      unsubscribe,
     };
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -67,7 +114,7 @@ export default {
   padding: 0 20px;
   background: #ffa580;
   letter-spacing: 2px;
-  transition: .2s all ease-in-out;
+  transition: 0.2s all ease-in-out;
   outline: none;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 1);

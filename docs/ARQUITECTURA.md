@@ -64,18 +64,26 @@ Glitter-Vue/
 │   ├── main.js             ← Punto de entrada
 │   ├── App.vue             ← Componente raíz
 │   │
+│   ├── store/              ← ✨ Vuex Store (Estado Global)
+│   │   ├── index.js        ← Store principal
+│   │   └── modules/
+│   │       ├── auth.js     ← Autenticación
+│   │       ├── notifications.js  ← Notificaciones
+│   │       └── search.js   ← Búsqueda
+│   │
 │   ├── api/
 │   │   └── glitterApi.js   ← Cliente Axios configurado
 │   │
 │   ├── router/
 │   │   ├── index.js        ← Configuración de rutas
-│   │   └── authGuard.js    ← Protección de rutas
+│   │   └── authGuard.js    ← Protección de rutas inteligente
 │   │
 │   ├── components/
-│   │   ├── NavBar.vue      ← Barra de navegación
+│   │   ├── NavBar.vue      ← Barra de navegación reactiva
 │   │   ├── GlitCard.vue    ← Tarjeta de publicación
 │   │   ├── UserCard.vue    ← Tarjeta de usuario
-│   │   ├── SearchBar.vue   ← Barra de búsqueda
+│   │   ├── NotificationToast.vue  ← Sistema de notificaciones
+│   │   ├── ConfirmModal.vue       ← Modal de confirmación
 │   │   └── ...
 │   │
 │   ├── views/
@@ -101,7 +109,7 @@ Glitter-Vue/
 └── babel.config.js         ← Configuración de Babel
 ```
 
-### Flujo de Datos
+### Flujo de Datos con Vuex
 
 ```
 ┌─────────────┐
@@ -110,20 +118,36 @@ Glitter-Vue/
 └──────┬──────┘
        │
        ↓
-┌─────────────┐      ┌──────────────┐
-│ Componente  │ ───→ │    Vuex      │
-│    Vue      │ ←─── │   (Store)    │
-└──────┬──────┘      └──────────────┘
+┌─────────────────────────────────────┐
+│         Componente Vue              │
+│  (NavBar, LoginView, etc.)          │
+└──────┬──────────────────────────────┘
+       │
+       ↓
+┌─────────────────────────────────────┐
+│         Vuex Store                  │
+│  ┌─────────────────────────────┐   │
+│  │ auth (autenticación)        │   │
+│  │ notifications (toasts)      │   │
+│  │ search (búsqueda)           │   │
+│  └─────────────────────────────┘   │
+└──────┬──────────────────────────────┘
        │
        ↓
 ┌─────────────┐
 │   Axios     │
-│  (API Call) │
+│ (glitterApi)│
 └──────┬──────┘
        │
        ↓
    Backend API
 ```
+
+**Ventajas de Vuex:**
+- ✅ Estado global reactivo
+- ✅ Navbar se actualiza automáticamente
+- ✅ Datos compartidos entre componentes
+- ✅ Debugging con Vue DevTools
 
 ### Rutas Principales
 
@@ -484,39 +508,80 @@ PORT=8080
 
 ---
 
+## ✨ Mejoras Implementadas (v2.0)
+
+### Estado Global con Vuex
+- ✅ Store configurado con módulos (auth, notifications, search)
+- ✅ Navbar reactiva - se actualiza automáticamente al login/logout
+- ✅ Estado compartido entre componentes
+- ✅ Debugging con Vue DevTools
+
+### Sistema de Notificaciones
+- ✅ Componente NotificationToast con animaciones
+- ✅ 4 tipos: success, error, warning, info
+- ✅ Auto-cierre configurable
+- ✅ Feedback visual en todas las acciones
+
+### Modales de Confirmación
+- ✅ Componente ConfirmModal reutilizable
+- ✅ Prevención de acciones destructivas
+- ✅ Diseño coherente con el tema
+
+### Búsqueda de Texto Completo
+- ✅ Índice de texto en MongoDB
+- ✅ Búsqueda desde navbar
+- ✅ Resultados filtrados en tiempo real
+- ✅ Enrutamiento inteligente según autenticación
+- ✅ Limpiar búsqueda funcional
+
+### Mejoras de Código
+- ✅ API Client sin errores
+- ✅ Guards inteligentes
+- ✅ Sin mutaciones directas de Vuex
+- ✅ Mejor manejo de errores
+- ✅ Logs útiles para debugging
+
+**Asistencia técnica:** Claude Sonnet 4.5 (Anthropic)
+
+---
+
 ## 🎯 Mejoras Futuras
 
 ### Funcionalidades
 - [ ] Comentarios en glits
 - [ ] Mensajería directa
 - [ ] Notificaciones en tiempo real (WebSockets)
-- [ ] Hashtags
-- [ ] Menciones (@usuario)
+- [ ] Hashtags y menciones (@usuario)
 - [ ] Reglits (compartir publicaciones)
 - [ ] Modo oscuro
-- [ ] Búsqueda avanzada
+- [ ] Búsqueda avanzada con filtros
 
 ### Técnicas
+- [ ] Tests unitarios (Jest) y E2E (Cypress)
 - [ ] Paginación infinita
 - [ ] Caché con Redis
-- [ ] Tests unitarios y E2E
-- [ ] CI/CD
+- [ ] CI/CD con GitHub Actions
 - [ ] Docker containers
 - [ ] Rate limiting
 - [ ] Compresión de imágenes
 - [ ] CDN para assets estáticos
+- [ ] PWA (Progressive Web App)
 
 ---
 
 ## 📚 Recursos
 
-- **Documentación Vue 3:** https://vuejs.org/
-- **Documentación Express:** https://expressjs.com/
-- **Documentación MongoDB:** https://docs.mongodb.com/
-- **Documentación Mongoose:** https://mongoosejs.com/
-- **JWT.io:** https://jwt.io/
+- **Vue 3:** https://vuejs.org/
+- **Vuex 4:** https://vuex.vuejs.org/
+- **Express:** https://expressjs.com/
+- **MongoDB:** https://docs.mongodb.com/
+- **Mongoose:** https://mongoosejs.com/
+- **JWT:** https://jwt.io/
+- **Claude Sonnet 4.5:** https://www.anthropic.com/claude
 
 ---
 
 **Desarrollado con ❤️ por el equipo No-Woman-No-Work**
+
+**Asistencia técnica y mejoras v2.0:** Claude Sonnet 4.5 (Anthropic)
 

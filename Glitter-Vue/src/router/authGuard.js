@@ -1,52 +1,74 @@
-import glitterApi from "../api/glitterApi.js";
-// import { useRouter } from 'vue-router'
+import store from "@/store";
 
+// Guard usando Vuex store
 const guard = async function () {
-  //  Looks for the token that was created during login in the localStorage
-  const token = localStorage.getItem("access_token");
+  // Verificar si hay token en el store
+  const isAuthenticated = store.getters["auth/isAuthenticated"];
 
-  if (!token) {
-    // if it can't find it, returns false
-    console.log("THe Guard won't let you in without a token");
+  if (!isAuthenticated) {
+    console.log("🚫 Guard: No hay token de autenticación");
     return false;
   }
 
   try {
-    // if there's a token, it makes an API call to verify it's valid
-    const response = await glitterApi.get("/auth/verify-token");
-    if (response.data.authenticated) {
-      console.log("The Guard lets you in");
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+    // Verificar el token con el backend
+    const isValid = await store.dispatch("auth/verifyToken");
+
+    if (isValid) {
+      console.log("✅ Guard: Token válido - acceso permitido");
       return true;
     } else {
+      console.log("❌ Guard: Token inválido - acceso denegado");
       return false;
     }
   } catch (error) {
-    console.log("The Guard has experienced issues");
+    console.error("⚠️ Guard: Error al verificar token", error);
     return false;
   }
 };
 
-// Not access to private routes
+// Guard para rutas privadas
 export const useAuthGuard = async (to, from, next) => {
-  const authenticated = await guard();
+  const authenticated = (await guard()) ?? false;
 
   if (!authenticated) {
-    console.log("You have been redirected by the Guard. Please, log in");
-    next("/login");
+    console.log("🔒 Redirigiendo a login - autenticación requerida");
+
+    // Mostrar notificación
+    store.dispatch(
+      "notifications/warning",
+      "Debes iniciar sesión para acceder a esta página"
+    );
+
+    // Redirigir a login con la ruta de destino guardada
+    next({
+      path: "/login",
+      query: { redirect: to.fullPath },
+    });
   } else {
     next();
   }
 };
 
-// Access to public zone but with private functionalities as follow or kudos
+// Guard para zona pública con funcionalidades extra
 export const isAuthenticated = async (to, from, next) => {
   const authenticated = await guard();
 
   if (authenticated) {
-    console.log("Public area with extra functionalities for registered users");
-    next("/public-plus");
+    // ✅ MEJORADO: Redirigir a /public-plus EXCEPTO cuando hay búsqueda
+    const hasSearchResults = store.getters["search/hasSearched"];
+
+    // Si viene de una búsqueda (from.name es null cuando es navegación programática)
+    // o si hay resultados de búsqueda activos, permitir acceso a /public
+    if (hasSearchResults || from.query?.fromSearch) {
+      console.log("🔍 Búsqueda activa - permitir acceso a /public");
+      next(); // Permitir acceso a /public para mostrar resultados
+    } else {
+      console.log("✨ Usuario autenticado - redirigir a /public-plus");
+      next("/public-plus");
+    }
   } else {
+    console.log("👤 Usuario no autenticado - acceso a /public");
     next();
   }
 };

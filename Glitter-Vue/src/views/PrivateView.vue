@@ -1,7 +1,8 @@
 <template>
-
   <div class="glits-container container-fluid">
-    <div class="container d-flex flex-column justify-content-center align-items-center">
+    <div
+      class="container d-flex flex-column justify-content-center align-items-center"
+    >
       <div class="mt-2">
         <header>For You</header>
 
@@ -11,37 +12,47 @@
         <!-- Search bar -->
         <div class="search-bar d-flex justify-content-end">
           {{ modelValue }}
-          <Toggle 
-          v-model="currentOrder" 
-          class="toggle-blue" 
-          :falseValue="'desc'" 
-          :trueValue="'asc'"
-          :offLabel="'Descending'" 
-          :onLabel="'Ascending'" />
+          <Toggle
+            v-model="currentOrder"
+            class="toggle-blue"
+            :falseValue="'desc'"
+            :trueValue="'asc'"
+            :offLabel="'Descending'"
+            :onLabel="'Ascending'"
+          />
         </div>
         <!-- Search bar -->
 
-        <GlitItem v-for="glit in glits"
-        :key="glit._id" :btns="btnArray" 
-        :userId="glit.author._id"
-        :author="glit.author.username" 
-        :publishDate="glit.publishDate" 
-        :text="glit.text" :kudos="glit.kudos"
-        :likeName="likeName" 
-        :glit="glit" 
-        :imagePath="glit.imagePath" />
+        <GlitItem
+          v-for="glit in glits"
+          :key="glit._id"
+          :btns="btnArray"
+          :userId="glit.author._id"
+          :author="glit.author.username"
+          :publishDate="glit.publishDate"
+          :text="glit.text"
+          :kudos="glit.kudos"
+          :likeName="likeName"
+          :glit="glit"
+          :imagePath="glit.imagePath"
+        />
 
         <!-- Paginator -->
         <div class="paginator">
-
-          <vue-awesome-paginate 
-          :total-items="totalGlits" 
-          :items-per-page="glits.limit" 
-          v-model="currentPage">
-
+          <vue-awesome-paginate
+            :total-items="totalGlits"
+            :items-per-page="glits.limit"
+            v-model="currentPage"
+          >
             <template #prev-button>
               <span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="black" width="12" height="12" viewBox="0 0 24 24">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="black"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
                 </svg>
               </span>
@@ -49,14 +60,18 @@
 
             <template #next-button>
               <span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="black" width="12" height="12" viewBox="0 0 24 24">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="black"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z" />
                 </svg>
               </span>
             </template>
-
           </vue-awesome-paginate>
-
         </div>
         <!-- Paginator -->
       </div>
@@ -64,120 +79,131 @@
   </div>
 </template>
 
-
 <script>
 import glitterApi from "../api/glitterApi";
 import { ref, onMounted, watch } from "vue";
 import GlitItem from "../components/GlitItem.vue";
-import GlitCard from '@/components/GlitCard.vue'
-import Toggle from '@vueform/toggle'
+import GlitCard from "@/components/GlitCard.vue";
+import Toggle from "@vueform/toggle";
 
-
-const defaultPage = 1
-const defaultLimit = 10
-const defaultOrder = 'desc'
+const defaultPage = 1;
+const defaultLimit = 10;
+const defaultOrder = "desc";
 
 export default {
-  name: 'PrivateView',
+  name: "PrivateView",
   components: {
     GlitItem,
     GlitCard,
-    Toggle
+    Toggle,
   },
 
-  props: [
-    'modelValue'
-  ],
+  props: ["modelValue"],
 
   setup(props) {
-
-    console.log(props.modelValue)
+    console.log(props.modelValue);
     const currentPage = ref(defaultPage);
     const currentOrder = ref(defaultOrder);
     const currentSearch = ref(props.modelValue); // value updated in app.vue
     const glits = ref([]);
-    const glit = ref('')
-    let totalGlits = ref(0)
+    const glit = ref("");
+    let totalGlits = ref(0);
 
-    const likeName = 'kudos'
+    const likeName = "kudos";
 
     const getGlits = async (page, limit, order) => {
       const response = await glitterApi.get("/glits/private", {
         params: {
           page,
           limit,
-          order
-        }
+          order,
+        },
       });
 
       glits.value = response.data.docs;
-      totalGlits.value = response.data.followedAuthorsTotalGlits
-      console.log(`${totalGlits.value} glits of people you follow.`)
+      totalGlits.value = response.data.followedAuthorsTotalGlits;
+      console.log(`${totalGlits.value} glits of people you follow.`);
       console.table(response.data.docs);
     };
 
     const btnArray = ref([
       {
-        txt: 'Unfollow',
-        class: 'btn-secondary',
+        txt: "Unfollow",
+        class: "btn-secondary",
         action: (glit) => unfollowUser(glit),
-        icon: '<i class="fa-solid fa-user-minus"></i>'
+        icon: '<i class="fa-solid fa-user-minus"></i>',
       },
       {
-        txt: 'Kudos',
-        class: 'btn-secondary',
+        txt: "Kudos",
+        class: "btn-secondary",
         action: (glit) => kudo(glit),
-        icon: '<i class="fa-solid fa-heart"></i>'
+        icon: '<i class="fa-solid fa-heart"></i>',
       },
       {
-        txt: 'DisKudos',
-        class: 'btn-secondary',
+        txt: "DisKudos",
+        class: "btn-secondary",
         action: (glit) => kudoDelete(glit),
-        icon: '<i class="fa-solid fa-hand-middle-finger"></i>'
+        icon: '<i class="fa-solid fa-hand-middle-finger"></i>',
       },
-    ])
+    ]);
 
     const unfollowUser = async (glit) => {
       try {
-        await glitterApi.delete(`/users/${glit.author._id}/unfollow`)
+        // ✅ FIX: El endpoint correcto es /follow, no /unfollow
+        await glitterApi.delete(`/users/${glit.author._id}/follow`);
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
+    };
 
     const kudo = async (glit) => {
       try {
-        console.log(glit)
-        const response = await glitterApi.post(`/glits/${glit._id}/kudos`)
-        glit.kudos = response.data.kudosSize
+        console.log(glit);
+        await glitterApi.post(`/glits/${glit._id}/kudos`);
+
+        // ✅ FIX: No mutar directamente, recargar glits
+        // Recargar glits para actualizar kudos
+        getGlits(currentPage.value, defaultLimit, currentOrder.value);
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
+    };
 
     const kudoDelete = async (glit) => {
       try {
-        console.log(glit)
-        const response = await glitterApi.delete(`/glits/${glit._id}/kudos`)
-        glit.kudos = response.data.kudosSize
+        console.log(glit);
+        await glitterApi.delete(`/glits/${glit._id}/kudos`);
+
+        // ✅ FIX: No mutar directamente, recargar glits
+        // Recargar glits para actualizar kudos
+        getGlits(currentPage.value, defaultLimit, currentOrder.value);
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
+    };
 
     onMounted(() => {
       getGlits(currentPage.value, defaultLimit, currentOrder.value);
     });
-    watch(() => currentPage.value, () => {
-      getGlits(currentPage.value, defaultLimit, currentOrder.value);
-    })
-    watch(() => currentOrder.value, () => {
-      getGlits(currentPage.value, defaultLimit, currentOrder.value);
-    })
-    watch(() => currentSearch.value, () => {
-      console.log(currentSearch.value);
-      getGlits(currentPage.value, defaultLimit, currentOrder.value);
-    })
+    watch(
+      () => currentPage.value,
+      () => {
+        getGlits(currentPage.value, defaultLimit, currentOrder.value);
+      }
+    );
+    watch(
+      () => currentOrder.value,
+      () => {
+        getGlits(currentPage.value, defaultLimit, currentOrder.value);
+      }
+    );
+    watch(
+      () => currentSearch.value,
+      () => {
+        console.log(currentSearch.value);
+        getGlits(currentPage.value, defaultLimit, currentOrder.value);
+      }
+    );
 
     return {
       glits,
@@ -187,12 +213,11 @@ export default {
       currentOrder,
       currentSearch,
       btnArray,
-      likeName
+      likeName,
     };
   },
-}	
+};
 </script>
-
 
 <style socoped>
 header {
@@ -215,7 +240,6 @@ Paginator
 
 */
 
-
 .paginator {
   text-align: center;
 }
@@ -225,9 +249,8 @@ Paginator
   height: 40px;
   cursor: pointer;
   background: #ffa580;
-  ;
   letter-spacing: 2px;
-  transition: .2s all ease-in-out;
+  transition: 0.2s all ease-in-out;
   outline: none;
   border: 1px solid rgba(0, 0, 0, 1);
   box-shadow: 3px 3px 1px 1px #95a4ff, 3px 3px 1px 2px rgba(0, 0, 0, 1);
@@ -257,26 +280,24 @@ Paginator
   transform: translateY(2px);
 }
 
-.paginator li:nth-child(2)>.paginate-buttons.number-buttons {
+.paginator li:nth-child(2) > .paginate-buttons.number-buttons {
   border-start-start-radius: 25px;
   border-end-start-radius: 25px;
   transition: none;
 }
 
-.paginator li:nth-last-child(2)>.paginate-buttons.number-buttons {
+.paginator li:nth-last-child(2) > .paginate-buttons.number-buttons {
   border-start-end-radius: 25px;
   border-end-end-radius: 25px;
 }
 
 .paginator .active-page {
   background-color: #99e98e;
-  ;
   color: f8f4e5;
 }
 
 .paginator .active-page {
   background-color: #99e98e;
-  ;
   color: f8f4e5;
 }
 
@@ -286,7 +307,6 @@ Paginator
 
 .paginator .active-page:hover {
   background-color: #99e98e;
-  ;
 }
 
 .paginator .back-button:active,

@@ -5,6 +5,7 @@
 [![Vue 3](https://img.shields.io/badge/Vue-3.2-4FC08D?logo=vue.js)](https://vuejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.21-000000?logo=express)](https://expressjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4.17-47A248?logo=mongodb)](https://www.mongodb.com/)
+[![Vuex](https://img.shields.io/badge/Vuex-4.0-4FC08D)](https://vuex.vuejs.org/)
 
 ---
 
@@ -40,20 +41,31 @@ npm install && npm run serve
 
 **Abre:** http://localhost:8080
 
-📖 **¿Primera vez?** Lee la [Guía de Inicio Rápido](docs/QUICK-START.md)
-
 ---
 
 ## 📚 Documentación
 
-| Documento | Descripción |
-|-----------|-------------|
-| **[Inicio Rápido](docs/QUICK-START.md)** | Configuración en 5 minutos |
-| **[Guía de Instalación](docs/INSTALACION.md)** | Instalación detallada paso a paso |
-| **[Arquitectura](docs/ARQUITECTURA.md)** | Estructura y diseño del sistema |
-| **[API Reference](docs/API.md)** | Documentación de endpoints |
-| **[Solución de Problemas](docs/TROUBLESHOOTING.md)** | Problemas comunes y soluciones |
-| **[MongoDB en Windows](docs/MONGODB-WINDOWS.md)** | Guía específica para Windows |
+### 🎯 Manuales de Uso
+
+| Documento | Tiempo | Descripción |
+|-----------|--------|-------------|
+| **[⚡ Inicio Rápido](docs/QUICK-START.md)** | 5 min | Configuración rápida |
+| **[📦 Instalación](docs/INSTALACION.md)** | 20 min | Guía completa paso a paso |
+| **[🐛 Troubleshooting](docs/TROUBLESHOOTING.md)** | - | Solución de problemas |
+| **[🗄️ MongoDB Windows](docs/MONGODB-WINDOWS.md)** | 10 min | Guía para Windows |
+
+### 📖 Documentación Técnica
+
+| Documento | Contenido |
+|-----------|-----------|
+| **[🏗️ Arquitectura](docs/ARQUITECTURA.md)** | Diseño del sistema + Mejoras v2.0 |
+| **[📡 API Reference](docs/API.md)** | Endpoints, ejemplos y modelos |
+| **[🔍 Búsqueda](docs/BUSQUEDA.md)** | Sistema de búsqueda de texto |
+
+### 📋 Navegación Visual
+
+**[📚 DOCUMENTACION.md](DOCUMENTACION.md)** ← Índice completo con guías
+| **[🔍 Búsqueda](docs/BUSQUEDA.md)** | Funcionalidad de búsqueda |
 
 ---
 
@@ -62,19 +74,19 @@ npm install && npm run serve
 ```
 📦 Glitter-FullStack-Social-Media-Project-Express-Vue
 │
-├── 🎨 Glitter-Vue/              Frontend (Vue 3) - Puerto 8080
+├── 🎨 Glitter-Vue/              Frontend (Vue 3 + Vuex) - Puerto 8080
 │   ├── src/
 │   │   ├── components/          Componentes reutilizables
 │   │   ├── views/               Páginas/Vistas
 │   │   ├── router/              Configuración de rutas
+│   │   ├── store/               Vuex store (auth, notifications, search)
 │   │   └── api/                 Cliente HTTP (Axios)
-│   └── package.json
+│   └── [README](Glitter-Vue/README.md)
 │
-├── ⚙️ Glitter-api/              Backend (Express) - Puerto 3000
+├── ⚙️ Glitter-api/              Backend (Express + MongoDB) - Puerto 3000
 │   ├── routes/                  Endpoints de la API
 │   ├── models/                  Modelos de MongoDB
-│   ├── lib/                     Utilidades
-│   └── package.json
+│   └── [README](Glitter-api/README.md)
 │
 ├── 📁 docs/                     Documentación
 ├── 🚀 start-dev.bat             Script de inicio (Windows)
@@ -84,22 +96,59 @@ npm install && npm run serve
 
 ---
 
-## 🛠️ Tecnologías
+## 🛠️ Stack Tecnológico
 
 ### Frontend
-- **Vue 3** - Framework progresivo
-- **Vue Router** - Navegación SPA
-- **Vuex** - Gestión de estado
+- **Vue 3** (Composition API) - Framework progresivo
+- **Vuex 4** - Gestión de estado global
+- **Vue Router 4** - Navegación SPA
 - **Axios** - Cliente HTTP
 - **Bootstrap** - Estilos y componentes
 
 ### Backend
 - **Node.js** - Runtime de JavaScript
-- **Express** - Framework web
+- **Express.js** - Framework web
 - **MongoDB** - Base de datos NoSQL
 - **Mongoose** - ODM para MongoDB
 - **JWT** - Autenticación
 - **Multer** - Upload de archivos
+
+### Desarrollo
+- **Vue CLI** - Tooling y build
+- **ESLint** - Linter de código
+- **Babel** - Transpilación
+- **Claude Sonnet 4.5** - Asistencia en desarrollo y documentación
+
+---
+
+## 🎯 Funcionalidades
+
+### Autenticación
+- ✅ Registro de usuarios con validación
+- ✅ Login con JWT
+- ✅ Recuperación de contraseña
+- ✅ Protección de rutas
+- ✅ Estado global reactivo
+
+### Publicaciones (Glits)
+- ✅ Crear glits con texto e imágenes
+- ✅ Feed público y privado
+- ✅ Sistema de kudos (likes)
+- ✅ Eliminar glits propios
+- ✅ **Búsqueda de texto completo**
+
+### Social
+- ✅ Seguir/dejar de seguir usuarios
+- ✅ Feed personalizado (usuarios seguidos)
+- ✅ Perfiles de usuario
+- ✅ Búsqueda de usuarios
+
+### UX
+- ✅ Diseño responsive
+- ✅ Notificaciones animadas
+- ✅ Modales de confirmación
+- ✅ Feedback visual en todas las acciones
+- ✅ Navbar reactiva
 
 ---
 
@@ -118,26 +167,14 @@ mongod --version
 
 ---
 
-## 🎯 Funcionalidades
-
-- ✍️ **Crear publicaciones** (glits) con texto e imágenes
-- ⭐ **Sistema de kudos** (likes)
-- 👥 **Seguir/dejar de seguir** usuarios
-- 🔍 **Búsqueda** de usuarios y publicaciones
-- 🔐 **Autenticación JWT** segura
-- 📱 **Diseño responsive**
-- 🔄 **Feed público y privado**
-- 👤 **Perfiles de usuario**
-
----
-
 ## 🔧 Comandos Principales
 
 ### Backend (Glitter-api)
 ```bash
-npm install          # Instalar dependencias
-npm run init-db      # Inicializar base de datos
-npm start            # Iniciar servidor (puerto 3000)
+npm install              # Instalar dependencias
+npm run init-db          # Inicializar base de datos
+npm run create-search-index  # Crear índice de búsqueda
+npm start                # Iniciar servidor (puerto 3000)
 ```
 
 ### Frontend (Glitter-Vue)
@@ -148,33 +185,28 @@ npm run build        # Build de producción
 npm run lint         # Linter
 ```
 
-### MongoDB
-```bash
-mongosh              # Abrir shell de MongoDB
-net start MongoDB    # Iniciar servicio (Windows)
-```
-
 ---
 
-## 📡 API Endpoints
+## 📡 API Endpoints Principales
 
 **Base URL:** `http://localhost:3000`
 
 ### Autenticación
 - `POST /auth/register` - Registrar usuario
-- `POST /auth/login` - Iniciar sesión
+- `POST /auth/login` - Iniciar sesión (devuelve JWT)
 - `GET /auth/verify-token` - Verificar token
 
-### Publicaciones (Glits)
+### Publicaciones
 - `GET /glits/` - Listar glits públicos
-- `GET /glits/private` - Listar glits privados [AUTH]
+- `GET /glits?search=término` - **Buscar glits**
+- `GET /glits/private` - Feed personalizado [AUTH]
 - `POST /glits/` - Crear glit [AUTH]
-- `DELETE /glits/:glitId` - Eliminar glit [AUTH]
-- `POST /glits/:glitId/kudos` - Dar kudos [AUTH]
+- `DELETE /glits/:id` - Eliminar glit [AUTH]
+- `POST /glits/:id/kudos` - Dar kudos [AUTH]
 
 ### Usuarios
-- `POST /users/:userId/follow` - Seguir usuario [AUTH]
-- `DELETE /users/:userId/follow` - Dejar de seguir [AUTH]
+- `POST /users/:id/follow` - Seguir usuario [AUTH]
+- `DELETE /users/:id/follow` - Dejar de seguir [AUTH]
 
 📖 **Documentación completa:** [API Reference](docs/API.md)
 
@@ -184,21 +216,17 @@ net start MongoDB    # Iniciar servicio (Windows)
 
 ### Abrir Workspace
 ```bash
-# Opción 1: Desde VS Code
-File > Open Workspace from File > glitter-workspace.code-workspace
-
-# Opción 2: Desde terminal
 code glitter-workspace.code-workspace
 ```
 
 ### Extensiones Recomendadas
 - ESLint
 - Prettier
-- Volar (Vue)
+- Volar (Vue 3)
 - MongoDB for VS Code
 
 ### Debugging
-Presiona `F5` y selecciona "🌟 Fullstack: Backend + Frontend"
+Presiona `F5` → Selecciona "🌟 Fullstack: Backend + Frontend"
 
 ---
 
@@ -206,11 +234,11 @@ Presiona `F5` y selecciona "🌟 Fullstack: Backend + Frontend"
 
 ### MongoDB no se conecta
 ```bash
-# Verificar servicio (Windows)
-Get-Service -Name MongoDB
-
-# Iniciar servicio
+# Windows
 net start MongoDB
+
+# Mac
+brew services start mongodb-community
 ```
 📖 **Guía completa:** [MongoDB en Windows](docs/MONGODB-WINDOWS.md)
 
@@ -229,14 +257,6 @@ lsof -ti:3000 | xargs kill -9
 
 ---
 
-## 🎓 Guías de Aprendizaje
-
-1. **Día 1:** [Instalación](docs/INSTALACION.md) → [Quick Start](docs/QUICK-START.md)
-2. **Día 2:** [Arquitectura](docs/ARQUITECTURA.md) → Explorar código
-3. **Día 3+:** Desarrollar nuevas funcionalidades
-
----
-
 ## 👥 Equipo
 
 Desarrollado por **No-Woman-No-Work**:
@@ -245,6 +265,8 @@ Desarrollado por **No-Woman-No-Work**:
 - Nelanyi Ruiz Contreras
 - Silvia Pescador López
 - Mariana Antoniol
+
+**Asistencia técnica:** Claude Sonnet 4.5 (Anthropic)
 
 ---
 
@@ -267,8 +289,8 @@ ISC License
 ## 🆘 Ayuda
 
 ¿Problemas? Consulta en orden:
-1. [Quick Start](docs/QUICK-START.md)
-2. [Troubleshooting](docs/TROUBLESHOOTING.md)
+1. [Inicio Rápido](docs/QUICK-START.md)
+2. [Solución de Problemas](docs/TROUBLESHOOTING.md)
 3. [Instalación Detallada](docs/INSTALACION.md)
 
 ---
@@ -276,6 +298,8 @@ ISC License
 <div align="center">
 
 **¡Feliz desarrollo con Glitter! ✨**
+
+Proyecto desarrollado como parte del Women in Tech Bootcamp
 
 [Inicio Rápido](docs/QUICK-START.md) • [Documentación](docs/) • [Reportar Bug](https://github.com/No-Woman-No-Work/Glitter-api/issues)
 

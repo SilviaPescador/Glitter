@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "test": "test",
-    "init-db": "node init-db.js"
+    "init-db": "node init-db.js",
+    "create-search-index": "node create-search-index.js"
   },
   "repository": {
     "type": "git",

@@ -1,39 +1,45 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light">
-
     <div class="container container-fluid justify-content-between">
-
       <!-- Left elements -->
       <div class="d-flex">
-
         <!-- Glitter logo -->
-        <router-link to="/landing-page" class="navbar-brand me-2 mb-1 d-flex align-items-center">
-          <img src="../assets/img/logo_navbar.svg" height="35" alt="Glitter Logo" loading="lazy"
-            style="margin-top: 2px;" />
+        <router-link
+          to="/landing-page"
+          class="navbar-brand me-2 mb-1 d-flex align-items-center"
+        >
+          <img
+            src="../assets/img/logo_navbar.svg"
+            height="35"
+            alt="Glitter Logo"
+            loading="lazy"
+            style="margin-top: 2px"
+          />
         </router-link>
 
         <!-- Search -->
-        <form class="input-group w-auto my-auto d-none d-sm-flex" @submit.prevent="search">
-
+        <form
+          class="input-group w-auto my-auto d-none d-sm-flex"
+          @submit.prevent="search"
+        >
           <div class="form-outline">
-
-            <input 
-            type="text" 
-            class="form-control" 
-            placeholder="Search glits..." 
-            v-model="searchTerm"
-            @keyup="$emit('updateSearch', searchTerm)" />
-
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search glits..."
+              v-model="searchTerm"
+              @keyup="$emit('updateSearch', searchTerm)"
+            />
           </div>
 
-          <button 
-          type="submit" 
-          class="btn btn-primary btn-form" 
-          @click="$emit('updateSearch', searchTerm)">
-          <i class="fas fa-search"></i></button>
-
+          <button
+            type="submit"
+            class="btn btn-primary btn-form"
+            @click="$emit('updateSearch', searchTerm)"
+          >
+            <i class="fas fa-search"></i>
+          </button>
         </form>
-
       </div>
       <!-- End left elements -->
 
@@ -67,82 +73,126 @@
       </ul>
       <!-- Right elements -->
     </div>
-
   </nav>
-
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import glitterApi from "../api/glitterApi";
 import LogoutButton from "./LogoutButton.vue";
 
 export default {
-  name: 'NavBar',
+  name: "NavBar",
   components: {
     LogoutButton,
   },
-  props: [
-    'modelValue'
-  ],
-
+  props: ["modelValue"],
 
   setup(props) {
     const searchTerm = ref(props.modelValue);
     const router = useRouter();
-    // The function returns immediately if the value of searchTerm is falsy to prevent sending an empty search to the server.
+    const store = useStore();
 
+    // Computed properties reactivas basadas en Vuex
+    const isAuthenticated = computed(
+      () => store.getters["auth/isAuthenticated"]
+    );
+    const currentUser = computed(() => store.getters["auth/currentUser"]);
+
+    // Búsqueda de glits
     const search = async () => {
-      if (!searchTerm.value) {
+      // Validar que hay término de búsqueda
+      if (!searchTerm.value || searchTerm.value.trim() === "") {
+        store.dispatch(
+          "notifications/warning",
+          "Por favor, escribe algo para buscar"
+        );
         return;
       }
+
       try {
-        const response = await glitterApi.get(`/glits?search=${searchTerm.value}`);
-        const data = response.data.docs;
-        if (data.length > 0) {
-          router.push({
-            name: 'search-results',
-            params: {
-              searchTerm: searchTerm.value,
-            },
-          });
+        // Indicar que estamos buscando
+        store.dispatch("search/setSearching", true);
+
+        // Hacer la petición al backend
+        const response = await glitterApi.get(
+          `/glits?search=${searchTerm.value.trim()}`
+        );
+
+        const results = response.data.docs;
+
+        // Guardar resultados en el store
+        store.dispatch("search/setSearchResults", {
+          term: searchTerm.value.trim(),
+          results: results,
+        });
+
+        // Indicar que terminamos de buscar
+        store.dispatch("search/setSearching", false);
+
+        // Siempre redirigir a /public para mostrar resultados (o vacío)
+        if (results.length > 0) {
+          // Mostrar notificación de éxito
+          store.dispatch(
+            "notifications/success",
+            `Se encontraron ${results.length} resultado${
+              results.length > 1 ? "s" : ""
+            }`
+          );
         } else {
+          // No hay resultados - pero igual guardamos la búsqueda
+          store.dispatch(
+            "notifications/info",
+            `No se encontraron resultados para "${searchTerm.value}"`
+          );
+        }
+
+        // ✅ MEJORADO: Redirigir inteligentemente
+        const currentPath = router.currentRoute.value.path;
+
+        // Si está autenticado, ir a public-plus, si no, a public
+        // Pero siempre con el query parameter fromSearch para que el guard lo permita
+        const targetPath = isAuthenticated.value ? "/public-plus" : "/public";
+
+        if (currentPath === targetPath) {
+          console.log(
+            `🔄 Ya estamos en ${targetPath}, forzando actualización...`
+          );
+          // Ya estamos en la ruta correcta, solo necesitamos que el watch detecte el cambio
+          // El watch de searchResults ya se encargará de actualizar
+        } else {
+          console.log(`➡️ Redirigiendo a ${targetPath} con búsqueda...`);
           router.push({
-            name: 'not-found',
+            path: targetPath,
+            query: { fromSearch: "true" }, // Indicar que viene de búsqueda
           });
         }
+
+        // Limpiar el campo de búsqueda
+        searchTerm.value = "";
       } catch (error) {
-        console.error(error);
+        console.error("Error en búsqueda:", error);
+        store.dispatch("search/setSearching", false);
+        store.dispatch(
+          "notifications/error",
+          "Error al realizar la búsqueda. Intenta de nuevo"
+        );
       }
     };
 
-
-    function checkLogin() {
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-
-    function checkLogout() {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
+    // Funciones reactivas que usan el computed
+    const checkLogin = () => isAuthenticated.value;
+    const checkLogout = () => !isAuthenticated.value;
 
     return {
       searchTerm,
       search,
       checkLogin,
       checkLogout,
+      isAuthenticated, // Exponer para usar en template si es necesario
+      currentUser, // Exponer info del usuario
     };
   },
 };
@@ -152,7 +202,7 @@ export default {
 .material-icons {
   color: white;
   font-size: 1.4em;
-  background-color: #A0C3D2;
+  background-color: #a0c3d2;
   padding: 0.3em;
   border-radius: 50%;
   margin: 0.1em;
@@ -171,7 +221,7 @@ export default {
   padding: 0 20px;
   background: #95a4ff;
   letter-spacing: 2px;
-  transition: .2s all ease-in-out;
+  transition: 0.2s all ease-in-out;
   outline: none;
   border: 1px solid rgba(0, 0, 0, 1);
   box-shadow: 3px 3px 1px 1px #ffa580, 3px 3px 1px 2px rgba(0, 0, 0, 1);

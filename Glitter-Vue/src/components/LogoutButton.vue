@@ -1,31 +1,38 @@
 <template>
-	<button type="button" class="btn" @click='handleLogout'><i class="fa-solid fa-right-from-bracket fa-xl"></i>
-	</button>
+  <button type="button" class="btn" @click="handleLogout">
+    <i class="fa-solid fa-right-from-bracket fa-xl"></i>
+  </button>
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
 export default {
-	setup() {
-		const router = useRouter()
+  setup() {
+    const router = useRouter();
+    const store = useStore();
 
-		function handleLogout() {
-			const token = localStorage.getItem('access_token');
-			if (token) {
-				localStorage.removeItem('access_token');
-				router.push('/');
-			}
-		}
+    // Logout usando Vuex store
+    function handleLogout() {
+      // Limpiar autenticación en el store (esto también limpia localStorage)
+      store.dispatch("auth/logout");
 
-		return {
-			handleLogout,
-		};
-	},
+      // Mostrar notificación de despedida
+      store.dispatch(
+        "notifications/info",
+        "¡Hasta pronto! Has cerrado sesión correctamente"
+      );
+
+      // Redirigir a la página de inicio
+      router.push("/");
+    }
+
+    return {
+      handleLogout,
+    };
+  },
 };
 </script>
 
-<style scoped>
-
-</style>
-
-
+<style scoped></style>

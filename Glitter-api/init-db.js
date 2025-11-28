@@ -10,8 +10,6 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const ObjectId = mongoose.Types.ObjectId;
 
-
-
 async function main() {
   // Ask the user to confirm if they are sure
   const nextStep = await question("Do you want to delete the database? [y/n]");
@@ -27,6 +25,9 @@ async function main() {
   await initUsers();
   await initGlits();
 
+  // Crear índice de búsqueda de texto
+  await createSearchIndex();
+
   // Desconnect the DB
 
   connection.close();
@@ -35,9 +36,6 @@ async function main() {
 main().catch((err) => console.log("Error", err));
 
 let users = [];
-
-
-
 
 async function initUsers() {
   // delete all users in database
@@ -188,6 +186,35 @@ async function initGlits() {
     },
   ]);
   console.log(`Created ${inserted.length} glits.`);
+}
+
+// Función para crear índice de búsqueda de texto
+async function createSearchIndex() {
+  try {
+    console.log("\n🔍 Creando índice de búsqueda de texto...");
+
+    const db = mongoose.connection.db;
+    const collection = db.collection("glits");
+
+    // Verificar si ya existe el índice
+    const indexes = await collection.indexes();
+    const hasTextIndex = indexes.some(
+      (index) => index.key && index.key._fts === "text"
+    );
+
+    if (hasTextIndex) {
+      console.log("✅ El índice de texto ya existe.");
+    } else {
+      // Crear índice de texto en el campo 'text'
+      await collection.createIndex({ text: "text" });
+      console.log("✅ Índice de búsqueda de texto creado exitosamente.");
+    }
+
+    console.log("💡 Ahora puedes buscar glits con: GET /glits?search=término");
+  } catch (error) {
+    console.error("❌ Error al crear índice de búsqueda:", error);
+    // No lanzar error para no interrumpir la inicialización
+  }
 }
 
 // function for the y/n question

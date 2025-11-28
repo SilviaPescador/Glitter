@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import { useAuthGuard } from "./authGuard";
-import { isAuthenticated } from "./authGuard";
+import { useAuthGuard, isAuthenticated } from "./authGuard";
 
 const routes = [
   {
@@ -34,7 +33,7 @@ const routes = [
   {
     path: "/public",
     name: "public",
-    beforeEnter: isAuthenticated,
+    beforeEnter: isAuthenticated, // ✅ RESTAURADO: Ahora es inteligente con búsqueda
     component: () =>
       import(/* webpackChunkName: "public" */ "../views/PublicView.vue"),
   },
@@ -58,7 +57,9 @@ const routes = [
     path: "/public-plus",
     name: "public-plus",
     component: () =>
-      import(/* webpackChunkName: "public-plus" */ "../views/PublicPlusView.vue"),
+      import(
+        /* webpackChunkName: "public-plus" */ "../views/PublicPlusView.vue"
+      ),
   },
   {
     path: "/user-profile",
@@ -81,4 +82,3 @@ const router = createRouter({
 });
 
 export default router;
-

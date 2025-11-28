@@ -7,13 +7,16 @@ const Glit = require("../models/glit");
 
 const glitRouter = express.Router();
 
-// Create multer object 
+// Create multer object
 const imageUpload = multer({
   dest: "public/uploads/",
 });
 
 // Create new glit with image or not
-glitRouter.post("/", authMiddleware, imageUpload.single("image"),
+glitRouter.post(
+  "/",
+  authMiddleware,
+  imageUpload.single("image"),
   (req, res) => {
     console.log(req.file);
     console.log(req.body);
@@ -101,7 +104,6 @@ glitRouter.delete("/:glitId/kudos", authMiddleware, (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-
 // Used by Public and Private 'get Glits' both
 // Returns --> Glits sorted + total number of Glits in database + total number of followed Tweets [PAGINATOR]
 const feed = (req, res, followedAuthors) => {
@@ -110,11 +112,27 @@ const feed = (req, res, followedAuthors) => {
   const order = req.query.order || "desc";
   const search = req.query.search;
 
+  console.log("📊 Feed request:", {
+    page,
+    limit,
+    order,
+    search,
+    hasFollowedAuthors: !!followedAuthors,
+  });
+
   const query = {
     publishDate: { $lte: new Date() },
   };
-  if (search) query.$text = { $search: search };
-  if (followedAuthors) query.author = { $in: followedAuthors };
+
+  // Búsqueda de texto (requiere índice en el modelo)
+  if (search) {
+    query.$text = { $search: search };
+    console.log("🔍 Búsqueda activa:", search);
+  }
+
+  if (followedAuthors) {
+    query.author = { $in: followedAuthors };
+  }
 
   var options = {
     page,
@@ -124,130 +142,89 @@ const feed = (req, res, followedAuthors) => {
 
   Glit.countDocuments(query, (err, count) => {
     if (err) {
-      console.log(err);
-      res.status(500).json(err);
-    } else {
-      const totalGlits = count;
-
-      // Separate query to retrieve the total number of the glits created by followed authors
-      const followedAuthorsQuery = {
-        author: { $in: followedAuthors },
-      };
-      Glit.countDocuments(
-        followedAuthorsQuery,
-        (err, followedAuthorsTotalGlits) => {
-          if (err) {
-            console.log(err);
-            res.status(500).json(err);
-          } else {
-            const aggregate = Glit.aggregate([
-              {
-                $match: query,
-              },
-              {
-                $project: {
-                  text: 1,
-                  imagePath: 1,
-                  publishDate: 1,
-                  author: 1,
-                  kudos: { $size: "$kudos" },
-                },
-              },
-            ]);
-
-            Glit.aggregatePaginate(aggregate, options, (err, result) => {
-              if (err) {
-                console.log(err);
-                res.status(500).json(err);
-              } else {
-                Glit.populate(
-                  result.docs,
-                  {
-                    path: "author",
-                    select: "_id username",
-                  },
-                  (err, populateResult) => {
-                    if (err) {
-                      console.log(err);
-                      res.status(500).json(err);
-                    } else {
-                      result.docs = populateResult;
-                      res.json({
-                        totalGlits,
-                        followedAuthorsTotalGlits,
-                        ...result,
-                      });
-                    }
-                  }
-                );
-              }
-            });
-          }
-        }
-      );
+      console.error("❌ Error al contar documentos:", err);
+      res
+        .status(500)
+        .json({ error: "Error al contar glits", details: err.message });
+      return;
     }
+
+    const totalGlits = count;
+    console.log(`📝 Total glits encontrados: ${totalGlits}`);
+
+    // Separate query to retrieve the total number of the glits created by followed authors
+    const followedAuthorsQuery = followedAuthors
+      ? {
+          author: { $in: followedAuthors },
+        }
+      : {};
+
+    Glit.countDocuments(
+      followedAuthorsQuery,
+      (err, followedAuthorsTotalGlits) => {
+        if (err) {
+          console.error("❌ Error al contar glits de seguidos:", err);
+          res.status(500).json({
+            error: "Error al contar glits de seguidos",
+            details: err.message,
+          });
+          return;
+        }
+
+        const aggregate = Glit.aggregate([
+          {
+            $match: query,
+          },
+          {
+            $project: {
+              text: 1,
+              imagePath: 1,
+              publishDate: 1,
+              author: 1,
+              kudos: { $size: "$kudos" },
+            },
+          },
+        ]);
+
+        Glit.aggregatePaginate(aggregate, options, (err, result) => {
+          if (err) {
+            console.error("❌ Error en aggregatePaginate:", err);
+            res
+              .status(500)
+              .json({ error: "Error al paginar glits", details: err.message });
+            return;
+          }
+
+          Glit.populate(
+            result.docs,
+            {
+              path: "author",
+              select: "_id username",
+            },
+            (err, populateResult) => {
+              if (err) {
+                console.error("❌ Error al popular author:", err);
+                res.status(500).json({
+                  error: "Error al popular autores",
+                  details: err.message,
+                });
+                return;
+              }
+
+              result.docs = populateResult;
+              console.log("✅ Feed generado exitosamente");
+
+              res.json({
+                totalGlits,
+                followedAuthorsTotalGlits,
+                ...result,
+              });
+            }
+          );
+        });
+      }
+    );
   });
 };
 
 module.exports = glitRouter;
-
-// COMO ESTABA DIA 14 POR LA MAÑANA
-
-// const feed = (req, res, followedAuthors) => {
-//     const page = req.query.page || 1;
-//     const limit = req.query.limit || 10;
-//     const order = req.query.order || 'desc';
-//     const search = req.query.search;
-
-//     const query = {
-//         publishDate: { $lte: new Date() }
-//     };
-//     if (search) query.$text = {$search: search};
-//     if (followedAuthors) query.author = {$in: followedAuthors};
-
-//     var options = {
-//         page,
-//         limit
-//     };
-//     options.sort = {'publishDate' : order};
-
-//     aggregate = Tweet.aggregate([
-//         {
-//             $match: query
-//         },
-//         {
-//             $project: {
-//                 text: 1,
-//                 imagePath: 1,
-//                 publishDate: 1,
-//                 author: 1,
-//                 kudos: { $size: "$kudos" }
-//             }
-//         }
-//     ]);
-
-//     Tweet.aggregatePaginate(aggregate, options, (err, result) =>{
-//         if (err) {
-//             console.log(err);
-//             res.status(500).json(err);
-//         } else {
-
-//             Tweet.populate(
-//                 result.docs,
-//                 {
-//                     path: 'author',
-//                     select: '_id username'
-//                 },
-//                 (err, populateResult) =>{
-//                     if (err) {
-//                         console.log(err);
-//                         res.status(500).json(err);
-//                     } else {
-//                         result.docs = populateResult
-//                         res.json(result);
-//                     }
-//                 }
-//             );
-//         }
-//     });
-// }

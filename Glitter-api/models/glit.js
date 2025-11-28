@@ -29,6 +29,9 @@ const glitSchema = new mongoose.Schema({
   ],
 });
 
+// Índice de texto para búsqueda
+glitSchema.index({ text: "text" });
+
 glitSchema.plugin(aggregatePaginate);
 
 module.exports = mongoose.model("Glit", glitSchema);
