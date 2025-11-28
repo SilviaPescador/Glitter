@@ -9,6 +9,15 @@
 
 ---
 
+## 🎨 Preview
+
+<div align="center">
+  <img src="docs/images/landing-page.png" alt="Glitter Landing Page" width="800">
+  <p><em>Página de bienvenida de Glitter</em></p>
+</div>
+
+---
+
 ## 🚀 Inicio Rápido
 
 ### Opción 1: Script Automático (Recomendado)
