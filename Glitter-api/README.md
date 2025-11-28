@@ -1,160 +1,322 @@
-# GLITTER FRONTEND
-Link: [Glitter design doc](https://github.com/No-Woman-No-Work/Glitter-Vue#readme)
+# ⚙️ Glitter API - Backend
 
-Frontend: [Glitter frontend](https://github.com/No-Woman-No-Work/Glitter-Vue)
+> Backend RESTful API para Glitter, construido con Express.js y MongoDB.
 
-Author(s): Andrea Ares Fernandez, Emma Alonso McCoy, Nelanyi Ruiz Contreras, Silvia Pescador López, Mariana Antoniol.
+[![Node.js](https://img.shields.io/badge/Node.js-14+-339933?logo=node.js)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.21-000000?logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4.17-47A248?logo=mongodb)](https://www.mongodb.com/)
 
-Status: [Draft]
+---
 
-Last updated: 13/02/2023
+## 🚀 Inicio Rápido
 
-## Contenido
-- Downloading
-- Installation
-- Goals
-- Background
-- Design and Architecture
-- Considerations
-# GLITTER BACKEND
-Link: [Glitter design doc](https://github.com/No-Woman-No-Work/Glitter-api/blob/main/README.md)
-
-Backend: [Glitter backend](https://github.com/No-Woman-No-Work/Glitter-api/blob/main/README.md)
-
-Author(s): Andrea Ares Fernandez, Emma Alonso McCoy, Nelanyi Ruiz Contreras, Silvia Pescador López, Mariana Antoniol.
-
-Status: [Draft]
-
-Last update: 15/02/2023
-
-## Content
-- Downloading
-- Installation
-- Goals
-- Background
-- Design and Architecture
-- Considerations
-
-
-## Downloading
-Glitter is currently hosted on GitHub. The frontend of the project can be found at [this link](https://github.com/No-Woman-No-Work/Glitter-Vue), and the backend can be found at [this link](https://github.com/No-Woman-No-Work/Glitter-api).
-
-If you want to follow the development of the Glitter frontend, you can download the source code via Git clone.
-
-```
-git clone + project link
-```
-
-## Installation
-
-Project setup
-
-```
+```bash
+# Instalar dependencias
 npm install
+
+# Inicializar base de datos con datos de ejemplo
+npm run init-db
+
+# Iniciar servidor
+npm start
 ```
 
-Initialise a new database with the default injected data in the glitter collection
+El servidor estará corriendo en: **http://localhost:3000**
+
+📖 **Documentación completa:** [README Principal](../README.md)
+
+---
+
+## 📋 Requisitos
+
+- **Node.js** v14 o superior
+- **MongoDB** v4 o superior (corriendo en puerto 27017)
+- **npm** v6 o superior
+
+---
+
+## 🛠️ Scripts Disponibles
+
+```bash
+npm start         # Iniciar servidor en puerto 3000
+npm run init-db   # Inicializar/resetear base de datos
+npm test          # Ejecutar tests (por implementar)
+```
+
+---
+
+## 📁 Estructura del Proyecto
 
 ```
-node init-db.js  // npm run init-db
+Glitter-api/
+├── app.js                  # Punto de entrada, configuración de Express
+├── authMiddleware.js       # Middleware de autenticación JWT
+├── init-db.js              # Script de inicialización de BD
+│
+├── lib/
+│   └── connectMongoose.js  # Configuración de conexión a MongoDB
+│
+├── models/
+│   ├── user.js             # Modelo de Usuario
+│   └── glit.js             # Modelo de Publicación
+│
+├── routes/
+│   ├── auth.js             # Rutas de autenticación
+│   ├── glits.js            # Rutas de publicaciones
+│   └── users.js            # Rutas de usuarios
+│
+├── public/
+│   └── uploads/            # Imágenes subidas por usuarios
+│
+└── package.json
 ```
 
-Start the server
+---
 
+## 🔌 API Endpoints
+
+**Base URL:** `http://localhost:3000`
+
+### Autenticación (`/auth`)
+
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/auth/register` | Registrar nuevo usuario | No |
+| POST | `/auth/login` | Iniciar sesión (devuelve JWT) | No |
+| GET | `/auth/verify-token` | Verificar token válido | Sí |
+| POST | `/auth/forgot-password` | Solicitar reset de contraseña | No |
+| POST | `/auth/reset-password` | Resetear contraseña | No |
+
+### Publicaciones (`/glits`)
+
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| GET | `/glits/` | Listar glits públicos | No |
+| GET | `/glits/private` | Listar glits de usuarios seguidos | Sí |
+| POST | `/glits/` | Crear nuevo glit | Sí |
+| DELETE | `/glits/:glitId` | Eliminar glit propio | Sí |
+| POST | `/glits/:glitId/kudos` | Dar kudos | Sí |
+| DELETE | `/glits/:glitId/kudos` | Quitar kudos | Sí |
+
+### Usuarios (`/users`)
+
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/users/:userId/follow` | Seguir usuario | Sí |
+| DELETE | `/users/:userId/follow` | Dejar de seguir | Sí |
+
+📖 **Documentación completa de la API:** [docs/API.md](../docs/API.md)
+
+---
+
+## 🔐 Autenticación
+
+Este API usa **JWT (JSON Web Tokens)** para autenticación.
+
+### Obtener un Token
+
+```bash
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"password123"}'
 ```
-node app.js      //   npm start
+
+### Usar el Token
+
+Incluye el token en el header `Authorization`:
+
+```bash
+curl -X POST http://localhost:3000/glits/ \
+  -H "Authorization: Bearer <tu_token_aqui>" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Mi primer glit!"}'
 ```
 
-## Endpoints
+---
 
-URL base = http://localhost:3000
+## 🗄️ Base de Datos
 
-### User register
-**POST /auth/register**
-Register a new user.
+### Modelos
 
-### User login
-**POST /auth/login**
-Log in a user and return a JSON Web Token.
+#### User
+```javascript
+{
+  username: String,      // Único, requerido
+  email: String,         // Único, requerido
+  password: String,      // Hash (bcrypt)
+  avatar: String,        // URL opcional
+  bio: String,
+  following: [ObjectId], // Usuarios seguidos
+  followers: [ObjectId], // Seguidores
+  createdAt: Date,
+  updatedAt: Date
+}
+```
 
-### Verify token
-**GET /auth/verify-token**
-Verify if the token is correct.
+#### Glit
+```javascript
+{
+  text: String,          // Requerido (max 280 caracteres)
+  author: ObjectId,      // Referencia a User
+  image: String,         // URL opcional
+  kudos: [ObjectId],     // Usuarios que dieron kudos
+  createdAt: Date,
+  updatedAt: Date
+}
+```
 
-### Forgot password
-**POST /auth/forgot-password**
-Create a recoverPasswordToken and send an email to the user.
+### Inicializar Base de Datos
 
-### Reset password
-**POST /auth/reset-password**
-Reset a user's password once the recoverPasswordToken has been confirmed.
+```bash
+npm run init-db
+```
 
-### List glits
-- For the public zone: **GET /glits/** 
-- For the private zone: **GET /glits/private** 
+Esto creará:
+- Base de datos "glitter"
+- Usuarios de ejemplo
+- Publicaciones de ejemplo
 
-### Create new glit
-**POST /glits/**
-Optional image upload.
+---
 
-### Delete glit
-**DELETE /glits/:glitId**
-Only delete glit of logged author.
+## 🔧 Configuración
 
-### Give kudos to a glit
-**POST /:glitId/kudos**
+### Variables de Entorno (Opcional)
 
-### Delete kudos to a glit
-**DELETE /glits/:glitId/kudos**
+Crea un archivo `.env` en la raíz del proyecto:
 
-### Follow new user
-**POST /users/:userId/follow**
-User logged cannot follow himself.
-### Unfollow new user
-**DELETE /users/:userId/follow**
+```env
+PORT=3000
+MONGODB_URI=mongodb://127.0.0.1:27017/glitter
+JWT_SECRET=tu_secreto_super_seguro
+NODE_ENV=development
 
+# Opcional: Email (MailJet)
+MAILJET_API_KEY=tu_api_key
+MAILJET_API_SECRET=tu_api_secret
+MAILJET_SENDER_EMAIL=tu_email@ejemplo.com
+```
 
-## Goals
-Final Project for the Women in Tech Bootcamp.
+### Configuración Actual
 
-The aim of this project is to apply all the acquired skills, simulating a real situation: the development of a project using iterations and making architectural decisions within a deadline, which is the reason why we decided to develop Glitter.
+Por defecto, el servidor usa:
+- **Puerto:** 3000
+- **MongoDB:** `mongodb://127.0.0.1:27017/glitter`
+- **JWT Secret:** "glitter" (⚠️ cambiar en producción)
 
-_Glitter is a micro-content platform created with the following objectives:_ 
+---
 
-- To provide a user-friendly interface that provides a simple navigation and interaction with the application.
+## 🧪 Testing
 
-- To offer an easy registration process to the system, allowing to perform functions as a member of the platform by indicating user name, e-mail address and password while guaranteeing data security by strong authentication and authorisation mechanisms.
+```bash
+# Verificar que el servidor funciona
+curl http://localhost:3000/glits/
 
-![input](https://user-images.githubusercontent.com/50715363/215982356-72e9a497-cc91-4109-97d7-595d5b2a9f19.png)
+# Debería devolver un JSON con publicaciones
+```
 
-- To allow logging into the platform's private area and being able to access all the platform's functionalities.
+---
 
-![input](https://user-images.githubusercontent.com/50715363/215983030-9a6ed6fd-03b7-47e8-82d6-545bbcdab9a0.png)
+## 📦 Dependencias Principales
 
-- Create publications through a user-friendly form where all the fields that make up a publication can be filled in.
+```json
+{
+  "express": "^4.21.2",        // Framework web
+  "mongoose": "^6.13.8",       // ODM para MongoDB
+  "jsonwebtoken": "^9.0.0",    // Autenticación JWT
+  "multer": "^2.0.2",          // Upload de archivos
+  "cors": "^2.8.5",            // Cross-Origin Resource Sharing
+  "validator": "^13.15.20",    // Validación de datos
+  "node-mailjet": "^6.0.11"    // Envío de emails
+}
+```
 
-![input](https://user-images.githubusercontent.com/50715363/216117628-caad82ab-c973-4f93-89fa-94ebc7c9faa5.png)
+---
 
-- To easily access a list of the latest publications, with two possible views: Public and Private. This last view will depend on the option to follow users and access their posts in a personalised feed.
+## 🐛 Solución de Problemas
 
-![input](https://user-images.githubusercontent.com/50715363/216122456-a706d9cc-5c74-4b36-ab57-6801f8742725.png)
+### MongoDB no se conecta
 
-## Background
-It is a good time to create an alternative platform to Twitter given the situation that Twitter is going through. We believe that this is an ideal project to boost our backend and frontend skills to meet the needs and provide value.
+```bash
+# Verificar que MongoDB está corriendo
+mongosh
 
-## Design and Architecture
-Glitter is a web application developed with a cutting-edge technology stack. It consists of a backend built with Node.js, Express, and MongoDB, and a frontend developed with Javascript and the Vue 3 framework.
+# Iniciar MongoDB (Windows)
+net start MongoDB
 
-Glitter's frontend has been built with Vue Composition API and styled with Bootstrap. The connection with the backend has been made via Axios, while Vuex has been used as a state handler. In addition, adaptations (transpilers) to older Javascript engines, such as Babel and Webpack, have been implemented to ensure cross-browser compatibility.
+# Iniciar MongoDB (Mac)
+brew services start mongodb-community
+```
 
-The Glitter backend uses Mongoose to connect to the noSQL MongoDB database. It has an authentication system based on Json Web Token and a mailing system implemented with MailJet. In addition, internal development testing tools, such as Postman, have been used to ensure the quality and stability of the application.
+### Puerto 3000 ocupado
 
-In short, Glitter is a powerful and versatile web application, built with the latest technologies and adapted to work on all devices thanks to its responsive design.
+```bash
+# Windows
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
 
-![input](https://user-images.githubusercontent.com/50715363/218560841-5ae5c39a-f3d8-4b0e-aab0-e9fe8a2cf7b6.png)
+# Mac/Linux
+lsof -ti:3000 | xargs kill -9
+```
 
-## Considerations
-- Scalability: the application must be scalable to handle an increasing amount of users and data. It is important to consider how scalability mechanisms will be implemented from the beginning.
+📖 **Más ayuda:** [docs/TROUBLESHOOTING.md](../docs/TROUBLESHOOTING.md)
 
-- Compatibility with different browsers and devices: the application should be compatible with a wide range of browsers and devices, including mobile devices. It is important to consider how compatibility will be ensured throughout development.
+---
 
+## 🔒 Seguridad
+
+### Para Desarrollo
+- ✅ CORS habilitado para todos los orígenes
+- ✅ JWT con secret simple
+- ✅ Sin rate limiting
+
+### Para Producción
+- ⚠️ Cambiar `JWT_SECRET` a un valor seguro
+- ⚠️ Configurar CORS para dominios específicos
+- ⚠️ Implementar rate limiting
+- ⚠️ Usar HTTPS
+- ⚠️ Validar y sanitizar todas las entradas
+- ⚠️ Configurar variables de entorno
+
+---
+
+## 📚 Documentación Adicional
+
+- **[README Principal](../README.md)** - Visión general del proyecto completo
+- **[API Reference](../docs/API.md)** - Documentación detallada de endpoints
+- **[Arquitectura](../docs/ARQUITECTURA.md)** - Diseño del sistema
+- **[Instalación](../docs/INSTALACION.md)** - Guía de instalación completa
+
+---
+
+## 👥 Autores
+
+Desarrollado por **No-Woman-No-Work**:
+- Andrea Ares Fernandez
+- Emma Alonso McCoy
+- Nelanyi Ruiz Contreras
+- Silvia Pescador López
+- Mariana Antoniol
+
+---
+
+## 📄 Licencia
+
+ISC License
+
+---
+
+## 🔗 Enlaces
+
+- [Repositorio Backend](https://github.com/No-Woman-No-Work/Glitter-api)
+- [Repositorio Frontend](https://github.com/No-Woman-No-Work/Glitter-Vue)
+- [Documentación Express](https://expressjs.com/)
+- [Documentación MongoDB](https://docs.mongodb.com/)
+- [Documentación Mongoose](https://mongoosejs.com/)
+
+---
+
+<div align="center">
+
+**[← Volver al README principal](../README.md)**
+
+</div>

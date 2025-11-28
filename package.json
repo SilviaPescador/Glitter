@@ -1,0 +1,29 @@
+{
+  "name": "glitter-fullstack",
+  "version": "1.0.0",
+  "description": "Glitter - Plataforma de Micro-contenido FullStack",
+  "private": true,
+  "scripts": {
+    "install:all": "npm run install:api && npm run install:vue",
+    "install:api": "cd Glitter-api && npm install",
+    "install:vue": "cd Glitter-Vue && npm install",
+    "dev:api": "cd Glitter-api && npm start",
+    "dev:vue": "cd Glitter-Vue && npm run serve",
+    "init-db": "cd Glitter-api && npm run init-db",
+    "setup": "npm run install:all && npm run init-db",
+    "start": "concurrently \"npm run dev:api\" \"npm run dev:vue\"",
+    "build:vue": "cd Glitter-Vue && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "vue",
+    "express",
+    "mongodb",
+    "fullstack",
+    "social-media"
+  ],
+  "author": "No-Woman-No-Work",
+  "license": "ISC"
+}
