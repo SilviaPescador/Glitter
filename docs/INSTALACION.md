@@ -16,8 +16,9 @@ Guía detallada para instalar y configurar Glitter en tu entorno local.
    - Descargar: https://www.mongodb.com/try/download/community
    - Verificar: `mongod --version`
 
-3. **npm** (viene con Node.js)
-   - Verificar: `npm --version`
+3. **pnpm** (gestor de paquetes del proyecto)
+   - Instalar: `npm install -g pnpm`
+   - Verificar: `pnpm --version`
 
 4. **Git** (opcional, recomendado)
    - Descargar: https://git-scm.com/
@@ -102,7 +103,7 @@ cd ~/Documents/MIS_PROYECTOS
 
 ```bash
 cd Glitter-api
-npm install
+pnpm install
 ```
 
 Esto instalará:
@@ -117,7 +118,7 @@ Esto instalará:
 
 ```bash
 cd ../Glitter-Vue
-npm install
+pnpm install
 ```
 
 Esto instalará:
@@ -125,7 +126,7 @@ Esto instalará:
 - Vue Router
 - Vuex
 - Axios
-- Bootstrap
+- Vite (build tool)
 - Y más...
 
 ---
@@ -149,7 +150,7 @@ sudo systemctl start mongod
 
 ```bash
 cd Glitter-api
-npm run init-db
+pnpm run init-db
 ```
 
 Esto creará:
@@ -190,7 +191,7 @@ chmod +x start-dev.sh
 **Terminal 1 - Backend:**
 ```bash
 cd Glitter-api
-npm start
+pnpm start
 ```
 
 Deberías ver:
@@ -202,13 +203,13 @@ Connected to MongoDB on glitter
 **Terminal 2 - Frontend:**
 ```bash
 cd Glitter-Vue
-npm run serve
+pnpm dev
 ```
 
 Deberías ver:
 ```
-App running at:
-- Local:   http://localhost:8080/
+VITE v6.x.x  ready in Xms
+  ➜  Local:   http://localhost:8080/
 ```
 
 ### Opción 3: VS Code
@@ -256,10 +257,9 @@ NODE_ENV=development
 ```
 
 #### Frontend
-Ya está configurado en `Glitter-Vue/.env.development`:
+Ya está configurado en `Glitter-Vue/.env.development` (si se necesita):
 ```env
-VUE_APP_API_URL=http://localhost:3000
-PORT=8080
+VITE_API_URL=http://localhost:3000
 ```
 
 ---
@@ -377,8 +377,10 @@ Si tienes problemas:
 3. Asegúrate de que MongoDB está corriendo
 4. Limpia e reinstala dependencias:
    ```bash
-   rm -rf node_modules package-lock.json
-   npm install
+   # Backend
+   cd Glitter-api && rm -rf node_modules pnpm-lock.yaml && pnpm install
+   # Frontend
+   cd Glitter-Vue && rm -rf node_modules pnpm-lock.yaml && pnpm install
    ```
 
 ---

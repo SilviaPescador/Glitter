@@ -38,8 +38,8 @@ El servidor estará corriendo en: **http://localhost:3000**
 ## 🛠️ Scripts Disponibles
 
 ```bash
-npm start         # Iniciar servidor en puerto 3000
-npm run init-db   # Inicializar/resetear base de datos
+pnpm start         # Iniciar servidor en puerto 3000
+pnpm run init-db   # Inicializar/resetear base de datos
 npm test          # Ejecutar tests (por implementar)
 ```
 
@@ -168,7 +168,7 @@ curl -X POST http://localhost:3000/glits/ \
 ### Inicializar Base de Datos
 
 ```bash
-npm run init-db
+pnpm run init-db
 ```
 
 Esto creará:

@@ -320,16 +320,16 @@ start-dev-simple.bat
 **Terminal 1:**
 ```cmd
 cd Glitter-api
-npm install
-npm run init-db
-npm start
+pnpm install
+pnpm run init-db
+pnpm start
 ```
 
 **Terminal 2:**
 ```cmd
 cd Glitter-Vue
-npm install
-npm run serve
+pnpm install
+pnpm dev
 ```
 
 ---

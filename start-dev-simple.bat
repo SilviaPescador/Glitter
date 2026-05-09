@@ -15,13 +15,13 @@ pause
 
 echo.
 echo [1/3] Iniciando Backend (Puerto 3000)...
-start "Glitter API" cmd /k "cd Glitter-api && npm start"
+start "Glitter API" cmd /k "cd Glitter-api && pnpm start"
 
 timeout /t 3 /nobreak >nul
 
 echo.
 echo [2/3] Iniciando Frontend (Puerto 8080)...
-start "Glitter Vue" cmd /k "cd Glitter-Vue && npm run serve"
+start "Glitter Vue" cmd /k "cd Glitter-Vue && pnpm dev"
 
 echo.
 echo [3/3] Abriendo navegador...

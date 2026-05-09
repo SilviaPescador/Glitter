@@ -35,9 +35,9 @@ fi
 echo ""
 echo "[2/4] Iniciando Backend (Puerto 3000)..."
 cd Glitter-api
-gnome-terminal -- bash -c "npm start; exec bash" 2>/dev/null || \
-osascript -e 'tell app "Terminal" to do script "cd \"'$(pwd)'\" && npm start"' 2>/dev/null || \
-xterm -e "npm start" &
+gnome-terminal -- bash -c "pnpm start; exec bash" 2>/dev/null || \
+osascript -e 'tell app "Terminal" to do script "cd \"'$(pwd)'\" && pnpm start"' 2>/dev/null || \
+xterm -e "pnpm start" &
 cd ..
 
 sleep 3
@@ -45,9 +45,9 @@ sleep 3
 echo ""
 echo "[3/4] Iniciando Frontend (Puerto 8080)..."
 cd Glitter-Vue
-gnome-terminal -- bash -c "npm run serve; exec bash" 2>/dev/null || \
-osascript -e 'tell app "Terminal" to do script "cd \"'$(pwd)'\" && npm run serve"' 2>/dev/null || \
-xterm -e "npm run serve" &
+gnome-terminal -- bash -c "pnpm dev; exec bash" 2>/dev/null || \
+osascript -e 'tell app "Terminal" to do script "cd \"'$(pwd)'\" && pnpm dev"' 2>/dev/null || \
+xterm -e "pnpm dev" &
 cd ..
 
 echo ""

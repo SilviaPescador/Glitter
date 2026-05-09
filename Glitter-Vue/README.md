@@ -12,10 +12,10 @@
 
 ```bash
 # Instalar dependencias
-npm install
+pnpm install
 
 # Servidor de desarrollo con hot-reload
-npm run serve
+pnpm dev
 ```
 
 La aplicación estará corriendo en: **http://localhost:8080**
@@ -27,7 +27,7 @@ La aplicación estará corriendo en: **http://localhost:8080**
 ## 📋 Requisitos
 
 - **Node.js** v14 o superior
-- **npm** v6 o superior
+- **pnpm** (gestor de paquetes del proyecto)
 - **Backend corriendo** en http://localhost:3000
 
 ---
@@ -35,9 +35,9 @@ La aplicación estará corriendo en: **http://localhost:8080**
 ## 🛠️ Scripts Disponibles
 
 ```bash
-npm run serve     # Servidor de desarrollo (puerto 8080)
-npm run build     # Build de producción
-npm run lint      # Linter y corrección de código
+pnpm dev          # Servidor de desarrollo (puerto 8080)
+pnpm build        # Build de producción
+pnpm lint         # Linter y corrección de código
 ```
 
 ---
@@ -47,7 +47,6 @@ npm run lint      # Linter y corrección de código
 ```
 Glitter-Vue/
 ├── public/
-│   ├── index.html          # HTML base
 │   └── favicon.ico
 │
 ├── src/
@@ -86,9 +85,9 @@ Glitter-Vue/
 │       ├── emailRegex.js   # Validación de email
 │       └── followingUsersName.js
 │
+├── index.html              # HTML base (Vite entry point)
 ├── package.json
-├── vue.config.js           # Configuración de Vue CLI
-└── babel.config.js         # Configuración de Babel
+└── vite.config.js          # Configuración de Vite
 ```
 
 ---
@@ -221,17 +220,26 @@ Archivo: `.env.production`
 VUE_APP_API_URL=https://tu-api-produccion.com
 ```
 
-### Vue Config
+### Vite Config
 
-Archivo: `vue.config.js`
+Archivo: `vite.config.js`
 
 ```javascript
-const { defineConfig } = require('@vue/cli-service');
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { fileURLToPath, URL } from 'node:url'
 
-module.exports = defineConfig({
-  transpileDependencies: true,
-  // Configuración adicional...
-});
+export default defineConfig({
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  server: {
+    port: 8080
+  }
+})
 ```
 
 ---
@@ -240,7 +248,7 @@ module.exports = defineConfig({
 
 ### Framework CSS
 
-El proyecto usa **Bootstrap** a través de `mdbvue` (Material Design Bootstrap Vue).
+El proyecto usa **Bootstrap** a través de CDN.
 
 ### Estilos Globales
 
@@ -261,8 +269,7 @@ Incluye estilos personalizados para:
   "vue": "^3.2.46",                    // Framework principal
   "vue-router": "^4.0.3",              // Enrutamiento
   "vuex": "^4.0.0",                    // Gestión de estado
-  "axios": "^1.12.0",                  // Cliente HTTP
-  "mdbvue": "^6.7.3",                  // Bootstrap Vue
+  "axios": "^1.16.0",                  // Cliente HTTP
   "@fortawesome/fontawesome-free": "^6.2.1",  // Iconos
   "vue-awesome-paginate": "^1.1.46"    // Paginación
 }
@@ -274,7 +281,7 @@ Incluye estilos personalizados para:
 
 ```bash
 # Verificar que la app funciona
-npm run serve
+pnpm dev
 
 # Abrir en navegador
 open http://localhost:8080
@@ -286,7 +293,7 @@ open http://localhost:8080
 
 ```bash
 # Crear build optimizado
-npm run build
+pnpm build
 
 # Los archivos se generan en dist/
 ```
@@ -327,7 +334,7 @@ Vue CLI automáticamente usará el siguiente puerto disponible (8081, 8082, etc.
 
 ```bash
 # Reinicia el servidor
-npm run serve
+pnpm dev
 ```
 
 📖 **Más ayuda:** [docs/TROUBLESHOOTING.md](../docs/TROUBLESHOOTING.md)
@@ -347,10 +354,10 @@ npm run serve
 
 ```bash
 # Ejecutar linter
-npm run lint
+pnpm lint
 
 # Auto-fix
-npm run lint -- --fix
+pnpm lint -- --fix
 ```
 
 ---
@@ -403,7 +410,8 @@ ISC License
 - [Documentación Vue 3](https://vuejs.org/)
 - [Documentación Vue Router](https://router.vuejs.org/)
 - [Documentación Vuex](https://vuex.vuejs.org/)
-- [Vue CLI](https://cli.vuejs.org/)
+- [Vue CLI → Vite (Migration Guide)](https://vuejs.org/guide/scaling-up/tooling.html)
+- [Vite](https://vite.dev/)
 
 ---
 

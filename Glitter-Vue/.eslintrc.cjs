@@ -1,14 +1,16 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
+    es2022: true
   },
   'extends': [
     'plugin:vue/vue3-essential',
     'eslint:recommended'
   ],
   parserOptions: {
-    parser: '@babel/eslint-parser'
+    ecmaVersion: 'latest',
+    sourceType: 'module'
   },
   rules: {
     "no-mixed-spaces-and-tabs": 0,

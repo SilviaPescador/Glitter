@@ -16,7 +16,7 @@ const store = createStore({
   },
 
   // Para debugging en desarrollo
-  strict: process.env.NODE_ENV !== "production",
+  strict: import.meta.env.MODE !== "production",
 });
 
 export default store;

@@ -56,9 +56,9 @@ sudo systemctl start mongod
 
 ```bash
 cd Glitter-api
-npm install          # Solo primera vez
-npm run init-db      # Solo primera vez
-npm start
+pnpm install         # Solo primera vez
+pnpm run init-db     # Solo primera vez
+pnpm start
 ```
 
 ✅ Verás: `Glitter is listening in 3000`
@@ -67,11 +67,11 @@ npm start
 
 ```bash
 cd Glitter-Vue
-npm install          # Solo primera vez
-npm run serve
+pnpm install         # Solo primera vez
+pnpm dev
 ```
 
-✅ Verás: `App running at: http://localhost:8080/`
+✅ Verás: `VITE ready in Xms → http://localhost:8080/`
 
 ### Paso 4: Abrir Navegador
 

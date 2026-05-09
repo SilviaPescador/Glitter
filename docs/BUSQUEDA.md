@@ -11,9 +11,9 @@ Guía completa de la funcionalidad de búsqueda de glits en Glitter.
 ```bash
 # Backend - Crear índice de texto en MongoDB
 cd Glitter-api
-npm run init-db
+pnpm run init-db
 # o si no quieres borrar datos:
-npm run create-search-index
+pnpm run create-search-index
 ```
 
 ### Usar la Búsqueda
@@ -96,12 +96,12 @@ if (search) {
 
 **Opción A - Con datos de ejemplo:**
 ```bash
-npm run init-db
+pnpm run init-db
 ```
 
 **Opción B - Sin borrar datos:**
 ```bash
-npm run create-search-index
+pnpm run create-search-index
 ```
 
 **Opción C - Manual:**
@@ -191,7 +191,7 @@ Muestran resultados:
 **Solución:**
 ```bash
 cd Glitter-api
-npm run create-search-index
+pnpm run create-search-index
 ```
 
 ### Resultados no se muestran

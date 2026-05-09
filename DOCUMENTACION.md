@@ -126,6 +126,7 @@ Guía rápida para navegar por toda la documentación del proyecto.
 ### Recursos Externos
 - [Vue 3](https://vuejs.org/)
 - [Vuex 4](https://vuex.vuejs.org/)
+- [Vite](https://vite.dev/)
 - [Express](https://expressjs.com/)
 - [MongoDB](https://docs.mongodb.com/)
 
@@ -143,11 +144,11 @@ Guía rápida para navegar por toda la documentación del proyecto.
 ```bash
 # Backend
 cd Glitter-api
-npm install && npm run init-db && npm start
+pnpm install && pnpm run init-db && pnpm start
 
 # Frontend
 cd Glitter-Vue
-npm install && npm run serve
+pnpm install && pnpm dev
 
 # MongoDB
 net start MongoDB  # Windows

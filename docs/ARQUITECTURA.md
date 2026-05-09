@@ -105,8 +105,8 @@ Glitter-Vue/
 │       └── followingUsersName.js
 │
 ├── package.json
-├── vue.config.js           ← Configuración de Vue CLI
-└── babel.config.js         ← Configuración de Babel
+├── vite.config.js           ← Configuración de Vite
+└── index.html               ← HTML base (Vite entry point)
 ```
 
 ### Flujo de Datos con Vuex
@@ -473,7 +473,7 @@ Frontend (Vercel/Netlify)
 - Vue Router 4.0.3
 - Vuex 4.0.0
 - Axios 1.12.0
-- Bootstrap (vía mdbvue)
+- Bootstrap (vía CDN)
 
 ### Backend
 - Node.js (v14+)

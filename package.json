@@ -4,15 +4,15 @@
   "description": "Glitter - Plataforma de Micro-contenido FullStack",
   "private": true,
   "scripts": {
-    "install:all": "npm run install:api && npm run install:vue",
-    "install:api": "cd Glitter-api && npm install",
-    "install:vue": "cd Glitter-Vue && npm install",
-    "dev:api": "cd Glitter-api && npm start",
-    "dev:vue": "cd Glitter-Vue && npm run serve",
-    "init-db": "cd Glitter-api && npm run init-db",
-    "setup": "npm run install:all && npm run init-db",
-    "start": "concurrently \"npm run dev:api\" \"npm run dev:vue\"",
-    "build:vue": "cd Glitter-Vue && npm run build"
+    "install:all": "pnpm run install:api && pnpm run install:vue",
+    "install:api": "cd Glitter-api && pnpm install",
+    "install:vue": "cd Glitter-Vue && pnpm install",
+    "dev:api": "cd Glitter-api && pnpm start",
+    "dev:vue": "cd Glitter-Vue && pnpm dev",
+    "init-db": "cd Glitter-api && pnpm run init-db",
+    "setup": "pnpm run install:all && pnpm run init-db",
+    "start": "concurrently \"pnpm run dev:api\" \"pnpm run dev:vue\"",
+    "build:vue": "cd Glitter-Vue && pnpm build"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

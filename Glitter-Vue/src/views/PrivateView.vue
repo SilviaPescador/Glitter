@@ -220,6 +220,8 @@ export default {
 </script>
 
 <style socoped>
+@import "@vueform/toggle/themes/default.css";
+
 header {
   text-shadow: 3px 3px #95a4ff;
   -webkit-text-stroke: 1px rgba(0, 0, 0);
@@ -324,7 +326,6 @@ Paginator
   margin-bottom: 1em;
 }
 
-@import "@vueform/toggle/themes/default.css";
 
 .toggle-blue {
   --toggle-width: 7rem;

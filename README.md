@@ -41,11 +41,11 @@ start-dev.bat
 ```bash
 # Terminal 1 - Backend
 cd Glitter-api
-npm install && npm run init-db && npm start
+pnpm install && pnpm run init-db && pnpm start
 
 # Terminal 2 - Frontend
 cd Glitter-Vue
-npm install && npm run serve
+pnpm install && pnpm dev
 ```
 
 **Abre:** http://localhost:8080
@@ -123,9 +123,9 @@ npm install && npm run serve
 - **Multer** - Upload de archivos
 
 ### Desarrollo
-- **Vue CLI** - Tooling y build
+- **Vite 6** - Build tool ultrarrápido
+- **pnpm** - Gestor de paquetes seguro y eficiente
 - **ESLint** - Linter de código
-- **Babel** - Transpilación
 - **Claude Sonnet 4.5** - Asistencia en desarrollo y documentación
 
 ---
@@ -165,7 +165,7 @@ npm install && npm run serve
 
 - **Node.js** v14+ - [Descargar](https://nodejs.org/)
 - **MongoDB** v4+ - [Descargar](https://www.mongodb.com/try/download/community)
-- **npm** o **yarn**
+- **pnpm** - Gestor de paquetes para todo el monorepo
 
 **Verificar instalaciones:**
 ```bash
@@ -180,18 +180,18 @@ mongod --version
 
 ### Backend (Glitter-api)
 ```bash
-npm install              # Instalar dependencias
-npm run init-db          # Inicializar base de datos
-npm run create-search-index  # Crear índice de búsqueda
-npm start                # Iniciar servidor (puerto 3000)
+pnpm install             # Instalar dependencias
+pnpm run init-db         # Inicializar base de datos
+pnpm run create-search-index  # Crear índice de búsqueda
+pnpm start               # Iniciar servidor (puerto 3000)
 ```
 
 ### Frontend (Glitter-Vue)
 ```bash
-npm install          # Instalar dependencias
-npm run serve        # Servidor de desarrollo (puerto 8080)
-npm run build        # Build de producción
-npm run lint         # Linter
+pnpm install         # Instalar dependencias
+pnpm dev             # Servidor de desarrollo (puerto 8080)
+pnpm build           # Build de producción
+pnpm lint            # Linter
 ```
 
 ---

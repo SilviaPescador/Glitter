@@ -68,7 +68,7 @@ mongod --dbpath=/usr/local/var/mongodb
 
 ```bash
 cd Glitter-api
-npm run init-db
+pnpm run init-db
 ```
 
 Esto reiniciará la base de datos con datos de ejemplo.
@@ -98,7 +98,7 @@ exit
 
 # Luego reinicializar
 cd Glitter-api
-npm run init-db
+pnpm run init-db
 ```
 
 ---
@@ -138,7 +138,7 @@ lsof -ti:3000 | xargs kill -9
 
 **Solución:**
 
-1. **Aceptar el puerto alternativo** (8081, 8082, etc.)
+1. **Vite usará automáticamente el siguiente puerto disponible** (8081, 8082, etc.)
 
 2. **O matar el proceso:**
 
@@ -158,7 +158,7 @@ lsof -ti:8080 | xargs kill -9
 ### Error al instalar dependencias
 
 **Síntomas:**
-- `npm install` falla
+- `pnpm install` falla
 - Errores de permisos
 - Errores de compilación
 
@@ -167,9 +167,9 @@ lsof -ti:8080 | xargs kill -9
 1. **Limpiar caché y reinstalar:**
 
 ```bash
-rm -rf node_modules package-lock.json
-npm cache clean --force
-npm install
+rm -rf node_modules pnpm-lock.yaml
+pnpm cache store prune
+pnpm install
 ```
 
 2. **Permisos (Mac/Linux):**
@@ -284,7 +284,7 @@ db.users.find({ email: "tu_email@ejemplo.com" })
 
 3. **Crear nuevo usuario:**
    - Usa el formulario de registro
-   - O ejecuta `npm run init-db` para crear usuarios de ejemplo
+   - O ejecuta `pnpm run init-db` para crear usuarios de ejemplo
 
 ---
 
@@ -345,14 +345,14 @@ app.use(express.static("./public"));
 
 - [ ] MongoDB está corriendo
 - [ ] Puerto 3000 está libre
-- [ ] Dependencias instaladas (`npm install`)
-- [ ] Base de datos inicializada (`npm run init-db`)
+- [ ] Dependencias instaladas (`pnpm install`)
+- [ ] Base de datos inicializada (`pnpm run init-db`)
 
 **Verificar logs:**
 
 ```bash
 cd Glitter-api
-npm start
+pnpm start
 # Lee los mensajes de error
 ```
 
@@ -363,14 +363,14 @@ npm start
 **Checklist:**
 
 - [ ] Puerto 8080 está libre (o acepta alternativo)
-- [ ] Dependencias instaladas (`npm install`)
+- [ ] Dependencias instaladas (`pnpm install`)
 - [ ] Node.js versión correcta (v14+)
 
 **Verificar logs:**
 
 ```bash
 cd Glitter-Vue
-npm run serve
+pnpm dev
 # Lee los mensajes de error
 ```
 
@@ -429,7 +429,7 @@ bash start-dev.sh
    - Lee los errores en la consola
 
 2. **Verificar que el frontend está corriendo:**
-   - Debe mostrar "App running at: http://localhost:8080/"
+   - Debe mostrar "VITE ready → http://localhost:8080/"
 
 3. **Limpiar caché del navegador:**
    - Ctrl+Shift+R (recarga forzada)
@@ -447,14 +447,14 @@ bash start-dev.sh
 
 ```bash
 # Ctrl+C para detener
-npm run serve
+pnpm dev
 ```
 
-2. **Limpiar caché de Vue:**
+2. **Limpiar caché de Vite:**
 
 ```bash
-rm -rf node_modules/.cache
-npm run serve
+rm -rf node_modules/.vite
+pnpm dev
 ```
 
 ---
@@ -483,7 +483,7 @@ Debe existir: `.vscode/launch.json`
 1. **Instalar dependencias:**
 
 ```bash
-npm install
+pnpm install
 ```
 
 2. **Configurar ESLint:**
@@ -491,11 +491,11 @@ npm install
 ```bash
 # Backend
 cd Glitter-api
-npm run lint -- --fix
+pnpm run lint -- --fix
 
 # Frontend
 cd Glitter-Vue
-npm run lint -- --fix
+pnpm lint -- --fix
 ```
 
 ---
@@ -523,22 +523,21 @@ exit
 ### 3. Limpiar dependencias
 
 ```bash
-# Backend
 cd Glitter-api
-rm -rf node_modules package-lock.json
-npm install
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
 
 # Frontend
 cd Glitter-Vue
-rm -rf node_modules package-lock.json
-npm install
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
 ```
 
 ### 4. Reinicializar base de datos
 
 ```bash
 cd Glitter-api
-npm run init-db
+pnpm run init-db
 ```
 
 ### 5. Iniciar todo de nuevo
@@ -550,10 +549,10 @@ start-dev.bat  # Windows
 
 # Opción 2: Manual
 # Terminal 1
-cd Glitter-api && npm start
+cd Glitter-api && pnpm start
 
 # Terminal 2
-cd Glitter-Vue && npm run serve
+cd Glitter-Vue && pnpm dev
 ```
 
 ---
