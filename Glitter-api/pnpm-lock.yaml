@@ -39,8 +39,8 @@ importers:
         specifier: ^6.0.11
         version: 6.0.11(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
       nodemailer:
-        specifier: ^9.1.1
-        version: 9.1.1
+        specifier: ^10.0.2
+        version: 10.0.12
       validator:
         specifier: ^13.15.22
         version: 13.15.35
@@ -1229,9 +1229,9 @@ packages:
     resolution: {integrity: sha512-5UaawWhpJc1uFxUl9a07jE8a4ZOax5hj7XYC0LFYyWOP8Rp0I8XvjbiQ6gy/ns7KSw0hqmjytP85GQsdVGEx5g==}
     engines: {node: '>= 12.0.0', npm: '>= 6.9.0'}
 
-  nodemailer@9.1.1:
-    resolution: {integrity: sha512-izw9mVKFix6YSnC9eLgV6g1opl9DUlRio9ZNcq+Wu9Ujn2UwF+8Nl0B8nz22kEC+CTZCvinkxwJ0DeFbb6NwcQ==}
-    engines: {node: '>=6.0.0'}
+  nodemailer@10.0.12:
+    resolution: {integrity: sha512-PQ46oNbNMuH/Sno7B5IWIU9etytwrO0xdTFvWXpIQFRXhBAXtzD48243AS+BCbQQTPD8y3fqUrgLn0tSo77gvg==}
+    engines: {node: '>=20.0.0'}
 
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
@@ -3498,7 +3498,7 @@ snapshots:
       - debug
       - supports-color
 
-  nodemailer@9.1.1: {}
+  nodemailer@10.0.12: {}
 
   object-assign@4.1.1: {}
 
